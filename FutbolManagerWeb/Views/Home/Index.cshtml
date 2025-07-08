@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Panel";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4">Bienvenido a FutbolManager</h2>
+    <p class="text-muted">
+        Tu centro de mando para gestionar todos los aspectos de tu organización de fútbol.
+    </p>
+
+    <div class="row g-4">
+        <!-- Temporadas Activas -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="card-title m-0 text-muted">Temporadas Activas</h6>
+                        <i class="bi bi-calendar3 fs-4 text-secondary"></i>
+                    </div>
+                    <h3 class="card-text">2</h3>
+                    <a href="@Url.Action("Index","Temporadas")" class="stretched-link text-decoration-none">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jugadores Totales -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="card-title m-0 text-muted">Jugadores Totales</h6>
+                        <i class="bi bi-person-circle fs-4 text-secondary"></i>
+                    </div>
+                    <h3 class="card-text">5</h3>
+                    <a href="@Url.Action("Index","Jugadors")" class="stretched-link text-decoration-none">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partidos Próximos -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="card-title m-0 text-muted">Partidos Próximos</h6>
+                        <i class="bi bi-trophy fs-4 text-secondary"></i>
+                    </div>
+                    <h3 class="card-text">5</h3>
+                    <a href="@Url.Action("Index","Partidos")" class="stretched-link text-decoration-none">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contratos Activos -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="card-title m-0 text-muted">Contratos Activos</h6>
+                        <i class="bi bi-file-earmark-text fs-4 text-secondary"></i>
+                    </div>
+                    <h3 class="card-text">5</h3>
+                    <a href="@Url.Action("Index","Contratos")" class="stretched-link text-decoration-none">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
