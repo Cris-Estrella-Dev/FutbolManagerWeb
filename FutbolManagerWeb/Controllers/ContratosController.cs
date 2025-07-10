@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,9 @@ namespace FutbolManagerWeb.Controllers
         // GET: Contratos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Contratos.Include(c => c.Jugador);
+            var applicationDbContext = _context.Contratos
+                .Include(c => c.Jugador)
+                .Include(c => c.Jugador.Equipo); // Include Equipo for player's team
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,6 +38,7 @@ namespace FutbolManagerWeb.Controllers
 
             var contrato = await _context.Contratos
                 .Include(c => c.Jugador)
+                .Include(c => c.Jugador.Equipo) // Include Equipo for player's team
                 .FirstOrDefaultAsync(m => m.ContratoId == id);
             if (contrato == null)
             {
@@ -48,7 +51,7 @@ namespace FutbolManagerWeb.Controllers
         // GET: Contratos/Create
         public IActionResult Create()
         {
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores, "JugadorId", "Apellidos");
+            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "NombreCompletoConEquipo"); // Use combined name and include Equipo
             return View();
         }
 
@@ -64,8 +67,14 @@ namespace FutbolManagerWeb.Controllers
                 _context.Add(contrato);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores, "JugadorId", "Apellidos", contrato.JugadorId);
+            } 
+            // When model state is invalid, repopulate the JugadorId SelectList
+            // and include Equipo to show the full name with team in case the user needs to re-select.
+            ViewData["JugadorId"] = new SelectList(
+                _context.Jugadores.Include(j => j.Equipo),
+                "JugadorId",
+                "NombreCompletoConEquipo",
+                contrato.JugadorId);
             return View(contrato);
         }
 
@@ -82,7 +91,7 @@ namespace FutbolManagerWeb.Controllers
             {
                 return NotFound();
             }
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores, "JugadorId", "Apellidos", contrato.JugadorId);
+            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "NombreCompletoConEquipo", contrato.JugadorId); // Use combined name and include Equipo
             return View(contrato);
         }
 
@@ -118,7 +127,7 @@ namespace FutbolManagerWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores, "JugadorId", "Apellidos", contrato.JugadorId);
+            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "NombreCompletoConEquipo", contrato.JugadorId); // Use combined name and include Equipo
             return View(contrato);
         }
 
@@ -132,6 +141,7 @@ namespace FutbolManagerWeb.Controllers
 
             var contrato = await _context.Contratos
                 .Include(c => c.Jugador)
+                .Include(c => c.Jugador.Equipo) // Include Equipo for player's team
                 .FirstOrDefaultAsync(m => m.ContratoId == id);
             if (contrato == null)
             {
@@ -147,7 +157,7 @@ namespace FutbolManagerWeb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contrato = await _context.Contratos.FindAsync(id);
-            if (contrato != null)
+            if (contrato != null) // Check if the contract was found before attempting to remove
             {
                 _context.Contratos.Remove(contrato);
             }

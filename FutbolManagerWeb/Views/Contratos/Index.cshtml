@@ -1,4 +1,4 @@
-﻿                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @model IEnumerable<FutbolManagerWeb.Models.Contrato>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @model IEnumerable<FutbolManagerWeb.Models.Contrato>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,14 +12,17 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+ <th>
+                Jugador
+ </th>
+ <th>
                 @Html.DisplayNameFor(model => model.Jugador)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaInicio)
+                Fecha de Inicio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaFin)
+                Fecha de Fin
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MontoCuota)
@@ -27,15 +30,20 @@
             <th>
                 @Html.DisplayNameFor(model => model.Frecuencia)
             </th>
-            <th></th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+ <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Jugador.Apellidos)
-            </td>
+ @Html.DisplayFor(modelItem => item.Jugador.NombreCompleto)
+ </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaInicio)
             </td>
@@ -48,12 +56,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Frecuencia)
             </td>
-            <td>
+             <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+ </td>
+           <td>
                 <a asp-action="Edit" asp-route-id="@item.ContratoId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ContratoId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ContratoId">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
