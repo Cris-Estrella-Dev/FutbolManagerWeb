@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -31,6 +31,7 @@ namespace FutbolManagerWeb.Models
         [Display(Name = "Fecha de Fin")]
         public DateTime FechaFin { get; set; }
 
+
         [Required]
         [DataType(DataType.Currency)]
         [Display(Name = "Monto de la Cuota")]
@@ -39,6 +40,7 @@ namespace FutbolManagerWeb.Models
         [Required]
         [Display(Name = "Frecuencia de Pago")]
         public FrecuenciaPago Frecuencia { get; set; }
+
 
         [NotMapped]
         public string Estado =>

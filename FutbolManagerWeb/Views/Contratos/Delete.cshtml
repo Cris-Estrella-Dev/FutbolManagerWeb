@@ -1,4 +1,4 @@
-﻿@model FutbolManagerWeb.Models.Contrato
+@model FutbolManagerWeb.Models.Contrato
 
 @{
     ViewData["Title"] = "Delete";
@@ -15,7 +15,7 @@
             @Html.DisplayNameFor(model => model.Jugador)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Jugador.Apellidos)
+            @Html.DisplayFor(model => model.Jugador.Nombre) @Html.DisplayFor(model => model.Jugador.Apellidos)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FechaInicio)

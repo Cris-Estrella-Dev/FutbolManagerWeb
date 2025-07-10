@@ -1,4 +1,4 @@
-﻿@model FutbolManagerWeb.Models.Contrato
+@model FutbolManagerWeb.Models.Contrato
 
 @{
     ViewData["Title"] = "Details";
@@ -10,6 +10,12 @@
     <h4>Contrato</h4>
     <hr />
     <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Jugador)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Jugador.Nombre) @Html.DisplayFor(model => model.Jugador.Apellidos)
+        </dt>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Jugador)
         </dt>

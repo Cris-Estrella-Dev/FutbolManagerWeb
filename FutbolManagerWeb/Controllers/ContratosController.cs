@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FutbolManagerWeb.Data;
+using Microsoft.Extensions.Logging;
 using FutbolManagerWeb.Models;
 
 namespace FutbolManagerWeb.Controllers
@@ -13,17 +14,19 @@ namespace FutbolManagerWeb.Controllers
     public class ContratosController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ContratosController> _logger;
+        
 
-        public ContratosController(ApplicationDbContext context)
+        public ContratosController(ApplicationDbContext context, ILogger<ContratosController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Contratos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Contratos
-                .Include(c => c.Jugador)
+            var applicationDbContext = _context.Contratos.Include(c => c.Jugador)
                 .Include(c => c.Jugador.Equipo); // Include Equipo for player's team
             return View(await applicationDbContext.ToListAsync());
         }
@@ -37,8 +40,7 @@ namespace FutbolManagerWeb.Controllers
             }
 
             var contrato = await _context.Contratos
-                .Include(c => c.Jugador)
-                .Include(c => c.Jugador.Equipo) // Include Equipo for player's team
+                .Include(c => c.Jugador) // Include Jugador
                 .FirstOrDefaultAsync(m => m.ContratoId == id);
             if (contrato == null)
             {
@@ -51,8 +53,12 @@ namespace FutbolManagerWeb.Controllers
         // GET: Contratos/Create
         public IActionResult Create()
         {
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "NombreCompletoConEquipo"); // Use combined name and include Equipo
-            return View();
+ var jugadores = _context.Jugadores
+ .Include(j => j.Equipo)
+ .ToList();
+
+            ViewData["JugadorId"] = new SelectList(jugadores, "JugadorId", "Nombre");
+
         }
 
         // POST: Contratos/Create
@@ -62,19 +68,41 @@ namespace FutbolManagerWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ContratoId,JugadorId,FechaInicio,FechaFin,MontoCuota,Frecuencia")] Contrato contrato)
         {
+            _logger.LogInformation($"ModelState.IsValid: {ModelState.IsValid}");
+            if (contrato != null)
+            {
+                _logger.LogInformation($"Contrato received: JugadorId={contrato.JugadorId}, FechaInicio={contrato.FechaInicio}, FechaFin={contrato.FechaFin}, MontoCuota={contrato.MontoCuota}, Frecuencia={contrato.Frecuencia}");
+            }
+            else
+            {
+                _logger.LogWarning("Contrato object is null in POST Create action.");
+            }
+
+            // When model state is invalid, repopulate the JugadorId SelectList
+            // and include Equipo to show the full name with team in case the user needs to re-select.
+            ViewData["JugadorId"] = new SelectList(
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogInformation("ModelState is invalid. Logging errors:");
+
+                foreach (var modelStateEntry in ModelState.Values)
+                {
+                    foreach (var error in modelStateEntry.Errors)
+                    {
+                        _logger.LogError($"Validation Error: {error.ErrorMessage}");
+                _context.Jugadores.Include(j => j.Equipo),
+                "JugadorId",
+                "Nombre",
+                contrato.JugadorId);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(contrato);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            } 
-            // When model state is invalid, repopulate the JugadorId SelectList
-            // and include Equipo to show the full name with team in case the user needs to re-select.
-            ViewData["JugadorId"] = new SelectList(
-                _context.Jugadores.Include(j => j.Equipo),
-                "JugadorId",
-                "NombreCompletoConEquipo",
-                contrato.JugadorId);
+            }
             return View(contrato);
         }
 
@@ -91,7 +119,7 @@ namespace FutbolManagerWeb.Controllers
             {
                 return NotFound();
             }
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "NombreCompletoConEquipo", contrato.JugadorId); // Use combined name and include Equipo
+            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "Nombre", contrato.JugadorId); // Use combined name and include Equipo
             return View(contrato);
         }
 
@@ -127,7 +155,7 @@ namespace FutbolManagerWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "NombreCompletoConEquipo", contrato.JugadorId); // Use combined name and include Equipo
+            ViewData["JugadorId"] = new SelectList(_context.Jugadores.Include(j => j.Equipo), "JugadorId", "Nombre", contrato.JugadorId); // Use combined name and include Equipo
             return View(contrato);
         }
 
@@ -140,8 +168,7 @@ namespace FutbolManagerWeb.Controllers
             }
 
             var contrato = await _context.Contratos
-                .Include(c => c.Jugador)
-                .Include(c => c.Jugador.Equipo) // Include Equipo for player's team
+                .Include(c => c.Jugador) // Include Jugador
                 .FirstOrDefaultAsync(m => m.ContratoId == id);
             if (contrato == null)
             {

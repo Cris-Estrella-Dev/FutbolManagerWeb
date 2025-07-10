@@ -13,9 +13,6 @@
     <thead>
         <tr>
  <th>
-                Jugador
- </th>
- <th>
                 @Html.DisplayNameFor(model => model.Jugador)
             </th>
             <th>
@@ -41,9 +38,6 @@
     <tbody>
 @foreach (var item in Model) {
  <tr>
-            <td>
- @Html.DisplayFor(modelItem => item.Jugador.NombreCompleto)
- </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaInicio)
             </td>
